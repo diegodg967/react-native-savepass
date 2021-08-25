@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -30,15 +31,22 @@ export function Home() {
 
   async function loadData() {
     const dataKey = '@savepass:logins';
-    // Get asyncStorage data, use setSearchListData and setData
+
+    const data = await AsyncStorage.getItem(dataKey);
+    const parsedData = JSON.parse(data);
+
+    setData(parsedData);
+    setSearchListData(parsedData);
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
+    setSearchListData(
+      data.filter(item => item.service_name === searchText)
+    );
   }
 
   function handleChangeInputText(text: string) {
-    // Update searchText value
+    setSearchText(text);
   }
 
   useFocusEffect(useCallback(() => {
@@ -47,6 +55,9 @@ export function Home() {
 
   return (
     <>
+      <StatusBar
+        translucent
+      />
       <Header
         user={{
           name: 'Rocketseat',
